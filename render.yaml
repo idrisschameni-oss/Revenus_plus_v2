@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: revenus-plus
+    runtime: python
+    plan: free
+    region: frankfurt
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: revenus-plus-db
+          property: connectionString
+      - key: ADMIN_EMAILS
+        sync: false
+
+databases:
+  - name: revenus-plus-db
+    plan: free
+    region: frankfurt
